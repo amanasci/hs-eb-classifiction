@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
+from scipy.stats import kurtosis , skew
 
 # save np.load
 np_load_old = np.load
