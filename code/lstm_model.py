@@ -65,13 +65,13 @@ o = keras.layers.Dense(500, activation="relu")(o)
 o = keras.layers.GaussianDropout(0.2)(o)
 outputs=tf.keras.layers.Dense(1,activation='sigmoid')(o)
 model= tf.keras.Model(inputs=net_input, outputs=outputs)
-model.compile(optimizer=tf.keras.optimizers.Adam(),
+model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.0001),
              loss='binary_crossentropy',
              metrics=['accuracy'])
 tf.keras.utils.plot_model(model, to_file=dot_img_file,dpi=196, show_shapes=True,show_layer_names=False)
 print(model.summary())
 
-r = model..fit(xl_train,Y_train,validation_split=0.1, epochs=100, batch_size = 12)
+r = model.fit(xl_train,Y_train,validation_split=0.1, epochs=100, batch_size = 12)
 
 model.save('model_lstm.h5')
 
