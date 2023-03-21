@@ -62,31 +62,31 @@ o = keras.layers.Dense(500, activation="relu")(o)
 o = keras.layers.GaussianDropout(0.2)(o)
 outputs=tf.keras.layers.Dense(1,activation='sigmoid')(o)
 model= tf.keras.Model(inputs=inputs, outputs=outputs)
-model.compile(optimizer=tf.keras.optimizers.Adam(),
+model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.0001,decay=1e-6),
              loss='binary_crossentropy',
              metrics=['accuracy'])
 tf.keras.utils.plot_model(model, to_file=dot_img_file,dpi=196, show_shapes=True,show_layer_names=False)
 print(model.summary())
 
-r = model..fit(xl_train,Y_train,validation_split=0.1, epochs=100, batch_size = 12)
+r = model.fit(X_train,Y_train,validation_split=0.1, epochs=100, batch_size = 12)
 
-model.save('model_lstm.h5')
+model.save('model_5_para.h5')
 
 plt.figure(figsize=(12, 8))
 plt.plot(r.history['loss'],label='Training Loss')
 plt.plot(r.history['val_loss'],label='Validation Loss')
 plt.legend()
-plt.show()
+plt.savefig('loss5.pdf')
 
 plt.figure(figsize=(12,8))
 plt.plot(r.history['accuracy'],label='Training Accuracy')
 plt.plot(r.history['val_accuracy'],label='Validation Accuracy')
 plt.legend()
-plt.show()
+plt.savefig('accuracy5.pdf')
 
 
 print("Model Evaluation on Test Data")
-print(model.evaluate(xl_train,Y_test))
+print(model.evaluate(X_test,Y_test))
 
 from sklearn.metrics import confusion_matrix
 import seaborn as sn
@@ -115,7 +115,7 @@ sn.heatmap(df_cm, annot=True,fmt='g',cmap="Blues")
 plt.xlabel("Predicted")
 plt.ylabel("True")
 plt.title('Confusion Matrix')
-plt.show()
+plt.savefig('confusion5.pdf')
 
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import classification_report
@@ -163,4 +163,4 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('Receiver operating characteristic')
 plt.legend(loc="lower right")
-plt.show()
+plt.savefig('ROC5.pdf')
