@@ -71,7 +71,7 @@ model.compile(optimizer=tf.keras.optimizers.legacy.Adam(learning_rate=0.0001),
 tf.keras.utils.plot_model(model, to_file=dot_img_file,dpi=196, show_shapes=True,show_layer_names=False)
 print(model.summary())
 
-r = model.fit(xl_train,Y_train,validation_split=0.1, epochs=100, batch_size = 12)
+r = model..fit(xl_train,Y_train,validation_split=0.1, epochs=100,batch_size = 12)
 
 model.save('model_lstm.h5')
 
@@ -79,13 +79,15 @@ plt.figure(figsize=(12, 8))
 plt.plot(r.history['loss'],label='Training Loss')
 plt.plot(r.history['val_loss'],label='Validation Loss')
 plt.legend()
-plt.show()
+plt.show(hold=False)
+plt.savefig('loss.pdf')
 
 plt.figure(figsize=(12,8))
 plt.plot(r.history['accuracy'],label='Training Accuracy')
 plt.plot(r.history['val_accuracy'],label='Validation Accuracy')
 plt.legend()
-plt.show()
+plt.show(hold=False)
+plt.savefig('accuracy.pdf')
 
 
 print("Model Evaluation on Test Data")
@@ -118,7 +120,8 @@ sn.heatmap(df_cm, annot=True,fmt='g',cmap="Blues")
 plt.xlabel("Predicted")
 plt.ylabel("True")
 plt.title('Confusion Matrix')
-plt.show()
+plt.show(hold=False)
+plt.savefig('confusion.pdf')
 
 from sklearn.metrics import precision_score, recall_score, f1_score
 from sklearn.metrics import classification_report
@@ -166,4 +169,5 @@ plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
 plt.title('Receiver operating characteristic')
 plt.legend(loc="lower right")
-plt.show()
+plt.show(hold=False)
+plt.savefig('ROC.pdf')
