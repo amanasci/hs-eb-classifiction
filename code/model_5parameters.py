@@ -47,8 +47,6 @@ N ,D =x.shape #D = 5 in our case.
 #Defining Model
 
 
-## LSTM Implementation
-
 dot_img_file = 'model.png'
 
 

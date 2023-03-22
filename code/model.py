@@ -72,18 +72,99 @@ model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001,decay=1e-4
 tf.keras.utils.plot_model(model, to_file=dot_img_file, show_shapes=True)
 print(model.summary())
 
-r = model.fit([X_train,xl_train],Y_train,validation_data=([X_test,xl_test],Y_test),epochs=60,batch_size = 8)
+r = model.fit([X_train,xl_train],Y_train,validation_split=0.1,epochs=60,batch_size = 8)
 
-model.save('/Models/model1.h5')
+model.save('/Models/model_combo.h5')
 
 plt.figure(figsize=(12, 8))
 plt.plot(r.history['loss'],label='Training Loss')
 plt.plot(r.history['val_loss'],label='Validation Loss')
 plt.legend()
-plt.show()
+plt.savefig('loss_combo.pdf')
 
 plt.figure(figsize=(12,8))
 plt.plot(r.history['accuracy'],label='Training Accuracy')
 plt.plot(r.history['val_accuracy'],label='Validation Accuracy')
 plt.legend()
-plt.show()
+plt.savefig('accuracy_combo.pdf')
+
+
+print("Model Evaluation on Test Data")
+print(model.evaluate([X_test,xl_test],Y_test))
+
+from sklearn.metrics import confusion_matrix
+import seaborn as sn
+
+# Make predictions on your test data
+predictions = model.predict([X_test,xl_test])
+
+# Convert predictions to binary class labels (0 or 1)
+predictions = np.round(predictions)
+
+# Compute the confusion matrix
+confusion_matrix = confusion_matrix(Y_test, predictions)
+
+# Print the confusion matrix
+print(confusion_matrix)
+
+
+# Create a dataframe from the confusion matrix
+df_cm = pd.DataFrame(confusion_matrix, index = ["Class 0","Class 1"],
+                  columns = ["Class 0","Class 1"])
+plt.figure(figsize=(12,8))
+# Create a heatmap from the dataframe
+sn.heatmap(df_cm, annot=True,fmt='g',cmap="Blues")
+
+
+plt.xlabel("Predicted")
+plt.ylabel("True")
+plt.title('Confusion Matrix')
+plt.savefig('confusion_combo.pdf')
+
+from sklearn.metrics import precision_score, recall_score, f1_score
+from sklearn.metrics import classification_report
+
+
+# Convert predictions to binary class labels (0 or 1)
+predictions1 = np.round(predictions)
+
+# Compute the precision score
+precision = precision_score(Y_test, predictions1)
+
+# Compute the recall score
+recall = recall_score(Y_test, predictions1)
+
+# Compute the F1 score
+f1 = f1_score(Y_test, predictions1)
+
+# Print the precision, recall, and F1 scores
+print("Precision: {:.3f}".format(precision))
+print("Recall: {:.3f}".format(recall))
+print("F1: {:.3f}".format(f1))
+
+# Get the classification report
+class_report = classification_report(Y_test, predictions1)
+
+print(class_report)
+
+
+from sklearn.metrics import roc_curve, auc
+
+# Compute false positive rate, true positive rate, and thresholds
+fpr, tpr, thresholds = roc_curve(Y_test, predictions)
+
+# Compute area under the curve (AUC)
+roc_auc = auc(fpr, tpr)
+
+# Plot the ROC curve
+plt.figure()
+plt.figure(figsize=(12,8))
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.3f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic')
+plt.legend(loc="lower right")
+plt.savefig('ROC_combo.pdf')
