@@ -14,4 +14,4 @@ def eval(model,x,xl, y, n):
         loss_score += score[0]
         acc_score += score[1]
 
-    print(acc_score/len(seeds))
+    return (acc_score/len(seeds))
